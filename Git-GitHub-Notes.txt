@@ -1,0 +1,126 @@
+Git/GitHub
+
+Git is a tool for maintaining project history and managing changes to files.
+It is a distributed version control system.
+
+There are two types of version control:-
+
+1. Centralized
+2. Distributed
+
+
+A centralized version control system stores the authoritative repository and its history on a central server. Developers can edit local files offline, but normally need a connection to the server to commit changes or access server history.
+
+Distributed version control:- Each developer normally has a local copy of the repository and its history on their computer. They can edit files, commit changes, create branches, and inspect local history offline. Once connected, they can fetch/pull and push to exchange changes; syncing is not automatic.
+Git is a distributed version control system. GitHub is a platform for hosting Git repositories and collaborating on them.
+
+There are 4 main locations where our code lives (Git workflow)
+
+working directory -> staging area -> local repository -> remote repository
+
+1. working directory:- the place where we edit files and make changes
+2. staging area:- where we select and prepare file content for the next commit; also called the index
+3. local repository:- where committed snapshots and their history are stored locally 
+4. remote repository:- where the repository is hosted elsewhere, such as on GitHub; pushing sends committed changes there.
+
+
+Git commands
+
+1.  git init (to initialize a Git repository; files are not automatically tracked)---------
+2.  git status (to show the current branch, staged changes, unstaged changes, and untracked files)-------
+3.  git add filename (to stage the current content of a file for the next commit)------------------
+4.  git add . (to stage additions, modifications, and deletions under the current directory; git add -A covers the whole repository)
+5.  git commit -m "msg" (to record the staged snapshot in the local repository with a message)--------------------------------
+6.  git push (to send local commits to the configured remote branch; use git push -u origin main to set tracking on the first push)
+7.  git pull (to fetch remote changes and integrate them into the current branch using merge or rebase; it does not always create a commit)
+8.  git config --global user.name "Shreyash" (to set the author name for commits; git config --global init.defaultBranch main sets the default name for new repositories)
+9.  git config --global user.email "shreyashhh.21@gmail.com" (to set the author email for commits; this does not log you into GitHub)
+10. git log (to view commit history, including hashes, authors, dates, and messages)
+11. git log --oneline (to show a compact commit history; git log --oneline -5 shows the latest 5 commits)
+12. git restore --staged filename (to unstage a file while keeping its working-directory edits; normally restores the index from HEAD)
+13. git branch branchname (to create a new branch at the current commit without switching to it)
+14. git branch (to list local branches; an asterisk marks the current branch)
+15. git switch branchname (to switch to an existing branch; git switch main switches back to main)
+16. git merge branchname (to integrate that branch into the current branch; first switch to main if main should receive the changes)
+17. git branch -d branchname (to delete a local branch after Git checks whether it has been merged; it does not delete the remote branch)
+18. git switch -c branchname (to create a new branch and switch to it; combines git branch and git switch)
+19. git stash (to save tracked staged and unstaged changes temporarily and reset those files to HEAD; use git stash -u to include untracked files)
+20. git stash pop (to restore the latest stash and remove its entry if successful; if conflicts occur, the stash entry remains)
+21. git stash apply (to restore the latest stash into the current working directory without deleting its entry; use --index to also attempt to restore staging)
+22. git tag -a v1.0 -m "comment" (to create an annotated tag at the current commit with tagger information, a date, and a message)
+23. git tag (to list local tags; git push origin v1.0 publishes a specific tag)
+24. git tag v1.1 (to create a lightweight tag at the current commit, without an annotated tag object)
+25. git rebase main (to replay commits from the current branch on top of main, creating new hashes for replayed commits; use master instead if that is your branch name)
+26. git clone url (to create a local copy of an existing repository and normally configure its source remote as origin)
+
+.gitignore concept:-
+1. Identify local files you do not want Git to track, such as a .env file.
+2. Create a file named .gitignore.
+3. In .gitignore, list the file names or patterns to ignore, such as .env or *.log; each pattern goes on a separate line.
+4. Run git add .gitignore and then commit it. Already tracked files are not ignored; git rm --cached filename stops tracking a file but keeps the local copy.  
+5. To ignore a directory, add its name followed by a slash, such as dir/. Ignoring a file does not remove it from earlier commits; rotate any exposed secrets. 
+
+----------------------------------------------------------------------------------------------------------------------
+
+-> Git does not track empty directories; it tracks files.
+solution:- add a placeholder file named .gitkeep inside the directory and commit it; .gitkeep is a convention, not a special Git feature. 
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Branching Concept:-
+
+-> A branch creates a separate line of development from a commit, not an independent directory. Commit feature work on that branch, then merge it into main when ready. Uncommitted changes may follow you when switching branches.
+-> A branch is a movable pointer to a commit. HEAD usually points to the current branch.
+
+
+Git Merge conflict:-
+
+-> A conflict occurs when Git cannot automatically combine changes. Review the conflicted files, edit the intended final content, remove conflict markers, stage the files with git add, and finish the merge with git commit. Use git merge --abort to cancel an in-progress merge.
+
+------------------------------------------------------------------------------------------------------------------------
+
+Git Stash
+ -> Stash helps temporarily set aside unfinished changes without adding a normal commit to branch history.
+ -> Stashing reduces the risk of mixing incomplete changes into another task or commit.
+ -> Git may refuse to switch branches if doing so would overwrite uncommitted changes.
+ -> If Git allows a direct switch, uncommitted changes may follow you to the other branch.
+ 
+ Basically, stash temporarily saves local changes so you can work on another task and restore them later. Switch back to your feature branch before git stash pop if that is where you want them restored. Stashes are local, are not tied exclusively to one branch, and may cause conflicts when restored. A WIP commit is also a valid alternative.
+ 
+ 
+--------------------------------------------------------------------------------------------------------------------------------
+ 
+Git Tags
+
+-> Use git tag to mark a particular commit, often for a release; tags do not automatically advance when new commits are made.
+Annotated tag:- stores metadata (tagger, date, and message); recommended for releases. 
+Lightweight tag:- a simple reference to a commit without an annotated tag object; useful for temporary or personal markers.
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+Git Rebase
+-> Rebase replays commits on a new base and can produce a linear history without an extra merge commit. Replayed commits get new hashes; coordinate before rebasing history others already use.
+-> With git rebase main while on your feature branch, the feature branch is updated and main is unchanged. After resolving rebase conflicts, run git add filename and git rebase --continue; use git rebase --abort to cancel.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Git fetch vs Git pull
+
+Git fetch -> downloads remote history and updates remote-tracking references such as origin/main. It does not change your current branch or working-directory files.
+Git pull -> fetches remote changes and integrates them into the current branch through merge or rebase. A fast-forward does not create a new commit; a merge of diverged histories normally does.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+For cloning a private repository locally using SSH:-
+
+1. Generate an SSH key locally with ssh-keygen -t ed25519 -C "YOUR_EMAIL"; keep the private key private. You must have permission to access the repository.
+2. Add the private key to your local SSH agent if needed, then open GitHub Settings -> SSH and GPG keys -> New SSH key.
+3. Copy the public key file, usually ~/.ssh/id_ed25519.pub. In Git Bash on Windows, use clip < ~/.ssh/id_ed25519.pub; copy the .pub file, not the private key.
+4. Give the key a title on GitHub, paste the public key, and save it. Test authentication with ssh -T git@github.com.
+5. Copy the repository SSH URL from GitHub and run git clone git@github.com:USERNAME/REPO.git locally.
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+Git fork - a GitHub feature that creates a separate repository under your account, linked to the original. Clone your fork locally, make commits, and push them to your fork. To contribute back, open a PR from your fork branch to the original repository. Your changes affect the original only when an authorized person integrates them; forks do not automatically sync with the original.
+ 
